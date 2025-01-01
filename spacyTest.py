@@ -95,6 +95,7 @@ def extract_resume_data( img_path, output_path):
 
 
 if __name__ == "__main__":
+    print("这是一个测试")
     img_path = "./images/3.jpg"
     output_path = "./data/result.json"
     extract_resume_data(img_path, output_path)
