@@ -1,0 +1,84 @@
+[
+  {
+    "PositionInfo": {
+      "Position": "姿控总体设计岗",
+      "Company": "北京星际防务科技有限公司",
+      "Salary": "2-5K",
+      "Skills": [
+        "C++"
+      ],
+      "Education": 3,
+      "Quality": 2
+    },
+    "Similarity": "0.94223"
+  },
+  {
+    "PositionInfo": {
+      "Position": "算法工程师",
+      "Company": "数坤（北京）网络科技股份有限公司",
+      "Salary": "40-70K",
+      "Skills": [
+        "C++",
+        "Python"
+      ],
+      "Education": 3,
+      "Quality": 1
+    },
+    "Similarity": "0.90987"
+  },
+  {
+    "PositionInfo": {
+      "Position": "C#开发工程师",
+      "Company": "昂坤视觉（北京）科技有限公司",
+      "Salary": "30-60K·14薪",
+      "Skills": [
+        "C++",
+        "Windows"
+      ],
+      "Education": 3,
+      "Quality": 3
+    },
+    "Similarity": "0.89950"
+  },
+  {
+    "PositionInfo": {
+      "Position": "UE软件工程师",
+      "Company": "中信银行股份有限公司",
+      "Salary": "30-60K",
+      "Skills": [
+        "软件工程",
+        "C++"
+      ],
+      "Education": 3,
+      "Quality": 1
+    },
+    "Similarity": "0.89884"
+  },
+  {
+    "PositionInfo": {
+      "Position": "C++软件工程师",
+      "Company": "逸超科技（北京）有限公司",
+      "Salary": "20-35K·14薪",
+      "Skills": [
+        "面向对象设计",
+        "C++"
+      ],
+      "Education": 3,
+      "Quality": 1
+    },
+    "Similarity": "0.89884"
+  },
+  {
+    "PositionInfo": {
+      "Position": "算法工程师",
+      "Company": "北京敏道云科技有限公司",
+      "Salary": "30-60K·14薪",
+      "Skills": [
+        "Python"
+      ],
+      "Education": 3,
+      "Quality": 3
+    },
+    "Similarity": "0.88225"
+  }
+]

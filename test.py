@@ -1,101 +1,113 @@
-import spacy
-import time
-import cv2
-import gc
-import json
-import re
-from paddleocr import PaddleOCR
-from spacy.matcher import Matcher
+from py2neo import Graph
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-# 提取建立数据
-def extract_resume_data( img_path, output_path):
+# **1. 连接到 Neo4j 数据库**
+class Neo4jHandler:
+    def __init__(self, uri, user, password):
+        self.graph = Graph(uri, auth=(user, password))
+    
+    def query(self, query):
+        return self.graph.run(query)
 
-    basic_data_path = "./data/basicData.json"
-    with open(basic_data_path, "r", encoding="utf-8") as f:
-        basicData = json.load(f)
+# **2. 定义职位特征查询语句**
+def get_job_features(neo4j_handler):
+    query = """
+    MATCH (job:Job)-[r]->(feature)
+    RETURN job.name AS job, collect(r.type + ":" + feature.name) AS features
+    """
+    result = neo4j_handler.query(query)
+    job_features = {record["job"]: record["features"] for record in result}
+    return job_features
 
-    # 提取文本中的姓名、专业、技能、学历、个人素质、邮箱
-    name = []
-    major = ["计算机类"]  # 默认为计算机类专业
-    education = []
-    skills = []
-    personality = []
+# **3. 将简历与职位特征匹配**
+def clean_text(text):
+    if isinstance(text, str):
+        return text.strip().lower()
+    return text
 
-    begin_time = time.time()
+def resume_to_features(resume, weights=None):
+    if weights is None:
+        weights = {"education": 0.2, "skill": 0.5, "quality": 0.2, "location": 0.1}
+    
+    features = []
+    # 添加学历
+    education_mapping = {"博士": 4, "硕士": 3, "本科": 2, "大专": 1}
+    education_scores = [education_mapping.get(clean_text(edu), 0) for edu in resume.get("education", [])]
+    if education_scores:
+        education_score = max(education_scores) * weights['education']
+        features.append(f"education:{education_score}")
+    
+    # 添加技能
+    for skill in resume.get("skills", []):
+        cleaned_skill = clean_text(skill)
+        if cleaned_skill:
+            features.append(f"skill:{cleaned_skill} {weights['skill']}")
+    
+    # 添加个人素质
+    for quality in resume.get("personality", []):
+        cleaned_quality = clean_text(quality)
+        if cleaned_quality:
+            features.append(f"quality:{cleaned_quality} {weights['quality']}")
+    
+    # 添加地理位置
+    location = resume.get("location")
+    if location:
+        cleaned_location = clean_text(location)
+        if cleaned_location:
+            features.append(f"location:{cleaned_location} {weights['location']}")
 
-    # OCR模型识别简历文字
-    ocr = PaddleOCR(use_angle_cls=True, lang="ch", use_gpu=True, show_log=False)
+    return " ".join(features)
 
-    img = cv2.imread(img_path)
+# **4. 计算职位相似性**
+def calculate_similarity(job_features, resume_features):
+    # 创建特征矩阵
+    vectorizer = TfidfVectorizer()
+    job_texts = [" ".join(features) for features in job_features.values()]
+    all_texts = job_texts + [resume_features]
+    features_matrix = vectorizer.fit_transform(all_texts)
+    
+    # 计算余弦相似度
+    similarity_matrix = cosine_similarity(features_matrix)
+    resume_similarity = similarity_matrix[-1][:-1]  # 与简历的相似度
+    return resume_similarity
 
-    result = ocr.ocr(img, cls=True)
-    resume_text = ""
-    for line in result:
-        for word_info in line:
-            resume_text += word_info[1][0] + " "  # word_info[1][0] 是文字内容
+# **5. 推荐职位**
+def recommend_jobs(job_features, similarity_scores, top_n=5):
+    sorted_jobs = sorted(zip(job_features.keys(), similarity_scores), key=lambda x: x[1], reverse=True)
+    return sorted_jobs[:top_n]
 
-    # 输出识别的文字
-    print("OCR 识别结果：")
-    print(resume_text.strip())
-
-    # 使用spacy训练模型提取职业技能
-    nlp = spacy.load("./spacy/model-best")
-    doc = nlp(resume_text)
-
-    # 提取职业技能、个人素质
-    for ent in doc.ents:
-        if ent.label_ == "major" and ent.text not in major and ent.text in basicData["major"]:
-            major.append(ent.text)
-        if ent.label_ == "skills" and ent.text not in skills and ent.text in basicData["skills"]:
-            skills.append(ent.text)
-        if ent.label_ == "personality" and ent.text not in personality and ent.text in basicData["personality"]:
-            personality.append(ent.text)
-
-    # 使用预处理模型提取人名、学历
-    nlp = spacy.load("zh_core_web_md")
-    doc = nlp(resume_text)
-
-    matcher = Matcher(nlp.vocab)
-    academic_pattern = [{"TEXT": {"IN": ["博士", "硕士", "本科", "专科", "职高"]}}]
-    matcher.add("ACADEMIC_PATTERN", [academic_pattern])
-    matches = matcher(doc)
-
-    # 提取人名
-    for ent in doc.ents:
-        if ent.label_ == "PERSON" and len(name) == 0 and ent.text not in name and ent.text in basicData["name"]:
-            name.append(ent.text)
-
-    # 正则匹配邮箱
-    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-    email = re.findall(email_pattern, resume_text)
-
-    # 提取学历
-    for match_id, start, end in matches:
-        label = nlp.vocab.strings[match_id]
-        content = doc[start:end].text
-        if content not in education and label == "ACADEMIC_PATTERN":
-            education.append(content)
-
-    # 写回文件
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump({"name": name, "major": major, "education": education,
-                  "skills": skills, "personality": personality, "email": email}, f, ensure_ascii=False, indent=2)
-
-    print("提取结果：")
-    print("姓名:", name)
-    print("专业:", major)
-    print("学历:", education)
-    print("技能:", skills)
-    print("个人素质:", personality)
-    print("邮箱:", email)
-
-    print("总共用时:", time.time() - begin_time, "s")
-
-    gc.collect()
-
-
+# **6. 测试简历和推荐逻辑**
 if __name__ == "__main__":
-    print("开始提取简历信息...")
-    img_path = "./images/1.jpg"
-    output_path = "./data/result.json"
-    extract_resume_data(img_path, output_path)
+    # 连接 Neo4j 数据库
+    uri = "bolt://localhost:7687"
+    user = "neo4j"
+    password = "mushanmushan"
+    neo4j_handler = Neo4jHandler(uri, user, password)
+    
+    # 获取职位特征
+    job_features = get_job_features(neo4j_handler)
+    
+    # 测试简历数据
+    resume = {
+        "name": ["田立辉"],
+        "major": ["计算机类"],
+        "education": ["本科"],
+        "skills": ["数据分析", "数据挖掘", "Python", "Spark", "Hive", "SQL", "数据可视化", "PowerBl", "编程语言"],
+        "personality": ["分析能力", "逻辑思维", "沟通能力", "迅速融入团队"],
+        "email": ["tianlihui222@canva.com"],
+        "location": ["北京"]
+    }
+    
+    # 提取简历特征
+    resume_features = resume_to_features(resume)
+    
+    # 计算相似性
+    similarity_scores = calculate_similarity(job_features, resume_features)
+    
+    # 推荐职位
+    recommendations = recommend_jobs(job_features, similarity_scores)
+    
+    print("推荐职位：")
+    for job, score in recommendations:
+        print(f"职位: {job}, 相似度: {score:.2f}")
