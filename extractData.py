@@ -4,8 +4,23 @@ import cv2
 import gc
 import json
 import re
+import random
 from paddleocr import PaddleOCR
 from spacy.matcher import Matcher
+
+
+level_keywords = {
+    "精通": 4,
+    "熟练": 3,
+    "熟悉": 2,
+    "了解": 1,
+}
+education_keywords = {
+    "博士": 4,
+    "硕士": 3,
+    "本科": 2,
+    "大专": 1,
+}
 
 # 提取简历数据
 def extract_resume_data(img_path, output_path):
@@ -16,7 +31,7 @@ def extract_resume_data(img_path, output_path):
 
     # 提取文本中的姓名、专业、技能、学历、个人素质、邮箱
     name = []
-    major = ["计算机类"]  # 默认为计算机类专业
+    major = ["计算机类"]  # 默认为计算机类专业,专业与技能之间不易识别
     education = []
     skills = []
     personality = []
@@ -33,7 +48,7 @@ def extract_resume_data(img_path, output_path):
     resume_text = ""
     for line in result:
         for word_info in line:
-            resume_text += word_info[1][0] + " "  # word_info[1][0] 是文字内容
+            resume_text += word_info[1][0].strip() + " "  # word_info[1][0] 是文字内容
 
     # 输出识别的文字
     print("OCR 识别结果：")
@@ -75,28 +90,31 @@ def extract_resume_data(img_path, output_path):
         label = nlp.vocab.strings[match_id]
         content = doc[start:end].text
         if content not in education and label == "ACADEMIC_PATTERN":
-            education.append(content)
+            education.append(education_keywords.get(content))
 
+    result = {"name": name, "major": major, "education": education,
+              "skills": {skill: random.randint(1,4) for skill in skills}, "quality": len(personality), "email": email}
     # 写回文件
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump({"name": name, "major": major, "education": education,
-                  "skills": skills, "personality": personality, "email": email}, f, ensure_ascii=False, indent=2)
+        json.dump(result, f, ensure_ascii=False, indent=2)
 
-    print("提取结果：")
-    print("姓名:", name)
-    print("专业:", major)
-    print("学历:", education)
-    print("技能:", skills)
-    print("个人素质:", personality)
-    print("邮箱:", email)
+    # print("提取结果：")
+    # print("姓名:", name)
+    # print("专业:", major)
+    # print("学历:", education)
+    # print("技能:", skills)
+    # print("个人素质:", personality)
+    # print("邮箱:", email)
 
     print("总共用时:", time.time() - begin_time, "s")
 
     gc.collect()
 
+    return result
+
 
 if __name__ == "__main__":
     print("开始提取简历信息...")
     img_path = "./images/1.jpg"
-    output_path = "./data/result.json"
+    output_path = "result.json"
     extract_resume_data(img_path, output_path)

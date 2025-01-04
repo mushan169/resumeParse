@@ -3,19 +3,6 @@ from py2neo import Graph
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-level_keywords = {
-    "精通": 4,
-    "熟练": 3,
-    "熟悉": 2,
-    "了解": 1,
-}
-education_keywords = {
-    "博士": 4,
-    "硕士": 3,
-    "本科": 2,
-    "大专": 1,
-}
-
 with open("./data/basicData.json", "r", encoding="utf-8") as f:
     basicData = json.load(f)
     skills_list = basicData["skills"]
@@ -124,9 +111,10 @@ def calculate_similarity_matrix(positions):
 
 
 # 推荐函数
-def recommend_positions_itemcf(resume, city, target_position_id=None, top_n=10):
+def recommend_positions_itemcf(resume, city, target_position_id=None, top_n=20):
     # 假设用户学历为本科以上
-    user_education_levels = [resume["education"]]
+    user_education_levels = resume["education"] if isinstance(
+        resume["education"], list) else [resume["education"]]
     user_skills = list(resume["skills"].keys())
     # 查询符合条件的职位数据
     positions = build_query(city, user_education_levels,
@@ -150,7 +138,7 @@ def recommend_positions_itemcf(resume, city, target_position_id=None, top_n=10):
         sorted_indices = np.argsort(-average_similarity)
         for idx in sorted_indices[:top_n]:
             recommendations.append({
-                "Position": positions[idx],
+                "PositionInfo": positions[idx],
                 "Similarity": average_similarity[idx],
             })
         return recommendations
@@ -167,41 +155,56 @@ def recommend_positions_itemcf(resume, city, target_position_id=None, top_n=10):
     for idx in similar_indices[:top_n + 1]:  # 获取前 n+1 个职位（包括目标职位）
         if position_ids[idx] != target_position_id:  # 排除目标职位本身
             recommendations.append({
-                "Position": positions[idx],
+                "PositionInfo": positions[idx],
                 "Similarity": similarity_matrix[target_index][idx],
             })
 
     return recommendations
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    city = ['北京市']
-    education = [1, 2, 3]
-    skills = ['Python', 'Java', 'C++']
-    limit = 10
-    resume = {
-        'name': "田立辉",
-        'email': "tianlihui222@canva.com",
-        'phone': "13868555068",
-        'major': "计算机科学与技术",
-        'education': 3,
-        'skills': {'Python': 4, 'Java': 3, 'C++': 1},
-        'quality': 5
-    }
-# print(list(resume["skills"].keys()))
-# 岗位查询部分
-# result = build_query(city, education,skills, limit)
-# for item in result:
-#     print(item["Education"])
+#     city = ['杭州市']
+#     education = [1, 2, 3]
+#     skills = ['Python', 'Java', 'C++']
+#     limit = 10
+#     top_n = 20
+#     target_position_id = None
+#     resume = {
+#         'name': "田立辉",
+#         'email': "tianlihui222@canva.com",
+#         'phone': "13868555068",
+#         'major': "计算机科学与技术",
+#         'education': 3,
+#         'skills': {'Python': 4, 'Java': 3, 'C++': 1},
+#         'quality': 5
+#     }
+# # print(list(resume["skills"].keys()))
+# # 岗位查询部分
+# # result = build_query(city, education,skills, limit)
+# # for item in result:
+# #     print(item["Education"])
 
-# 协同过滤算法实现
-# 输入为用户的简历信息,指定的城市和目标职位id（可不选）
-recommendations = recommend_positions_itemcf(
-    resume, city, target_position_id=None, top_n=10)
+# # 协同过滤算法实现
+# # 输入为用户的简历信息,指定的城市和目标职位id（可不选）
+# recommendations = recommend_positions_itemcf(
+#     resume, city, target_position_id, top_n)
 
-# for item in recommendations:
-#     print({
+# # for item in recommendations:
+# #     print({
+# #         "PositionInfo": {
+# #             "Position": item["Position"]["Position"],
+# #             "Company": item["Position"]["Company"],
+# #             "Salary": item["Position"]["Salary"],
+# #             "Skills": item["Position"]["Skills"],
+# #             "Education": item["Position"]["Education"],
+# #             "Quality": item["Position"]["Quality"]
+# #         },
+# #         "Similarity": f"{item['Similarity']:.5f}"
+# #     })
+
+# with open('positions.json', 'w', encoding='utf-8') as f:
+#     json.dump([{
 #         "PositionInfo": {
 #             "Position": item["Position"]["Position"],
 #             "Company": item["Position"]["Company"],
@@ -211,17 +214,4 @@ recommendations = recommend_positions_itemcf(
 #             "Quality": item["Position"]["Quality"]
 #         },
 #         "Similarity": f"{item['Similarity']:.5f}"
-#     })
-
-with open('positions.json', 'w', encoding='utf-8') as f:
-    json.dump([{
-        "PositionInfo": {
-            "Position": item["Position"]["Position"],
-            "Company": item["Position"]["Company"],
-            "Salary": item["Position"]["Salary"],
-            "Skills": item["Position"]["Skills"],
-            "Education": item["Position"]["Education"],
-            "Quality": item["Position"]["Quality"]
-        },
-        "Similarity": f"{item['Similarity']:.5f}"
-    } for item in recommendations], f, ensure_ascii=False, indent=2)
+#     } for item in recommendations], f, ensure_ascii=False, indent=2)
