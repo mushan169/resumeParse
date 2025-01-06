@@ -1,6 +1,6 @@
 import extractData
 import itremCF
-
+from docx2pdf import convert
 
 if __name__ == '__main__':
     # 提取简历数据

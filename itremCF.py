@@ -24,7 +24,7 @@ MATCH (cn:Company)-[:HAS]->(cp:CompanyPosition)-[:POSITION]->(p:Position),
       (cp)-[:CITY]->(c:City),
       (cp)-[:QUALITY]->(q:Quality)
 WHERE e.name IN $education 
-  AND c.name IN $city 
+  AND ($city IS NULL OR c.name IN $city)
   AND ANY(skill IN $skills WHERE skill IN [(cp)-[:REQUIRES_SKILL]->(sk2:Skill) | sk2.name])
 WITH p.name AS Position, 
      cn.name AS Company, 
@@ -144,8 +144,8 @@ def recommend_positions_itemcf(resume, city, target_position_id=None, top_n=20):
         return recommendations
 
     # 查找目标职位的索引
-    if target_position_id not in position_ids:
-        return []
+    # if target_position_id not in position_ids:
+    #     return []
 
     target_index = position_ids.index(target_position_id)
 
