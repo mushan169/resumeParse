@@ -1,0 +1,56 @@
+{
+  
+    "deepseek": {
+      "id": "0194cbf45dc03647a660e9dc9f8ce34a",
+      "object": "chat.completion",
+      "created": 1738588577,
+      "model": "deepseek-ai/DeepSeek-V3",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "中国大模型行业2025年将面临技术创新、数据安全、市场竞争等挑战，同时也将迎来政策支持、应用场景拓展、国际合作等机遇。"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 71,
+        "completion_tokens": 32,
+        "total_tokens": 103
+      },
+      "system_fingerprint": ""
+    },
+    "resumeInof":{
+      "name": [
+        "田立辉"
+      ],
+      "major": [
+        "计算机类"
+      ],
+      "education": [
+        "本科"
+      ],
+      "skills": [
+        "数据分析",
+        "数据挖掘",
+        "Python",
+        "Spark",
+        "Hive",
+        "SQL",
+        "数据可视化",
+        "PowerBl",
+        "编程语言"
+      ],
+      "quality": [
+        "分析能力",
+        "逻辑思维",
+        "沟通能力",
+        "迅速融入团队"
+      ],
+      "email": [
+        "tianlihui222@canva.com"
+      ]
+    }
+}

@@ -1,0 +1,324 @@
+{
+    "status": {
+        "code": 200,
+        "message": "success"
+    },
+    "result": {
+        "name": "王家豪",
+        "email": "1980708158@qq.com",
+        "phone": "13868555068",
+        "gender": "男",
+        "age": "22",
+        "degree": "本科",
+        "surname": "王",
+        "qq": "1980708158",
+        "grad_time": "2025.06",
+        "college": "温州大学",
+        "major": "计算机科学与技术",
+        "college_type": "0",
+        "college_rank": "251",
+        "work_year": "0",
+        "work_year_inf": "0",
+        "work_year_norm": "0",
+        "languages": "普通话,英语",
+        "english_level": "大学英语4级",
+        "resume_type": "0",
+        "resume_name": "cv20250113_184013146_170.jpg",
+        "resume_parse_time": "2025-01-13 18:40:13",
+        "resume_integrity": "50",
+        "education_objs": [
+            {
+                "start_date": "2021.09",
+                "end_date": "2025.06",
+                "edu_college": "温州大学",
+                "edu_college_type": "0",
+                "edu_college_rank": "251",
+                "edu_major": "计算机科学与技术",
+                "edu_degree": "本科",
+                "edu_degree_norm": "本科",
+                "edu_content": "主修课程:C、Java、Python 程序设计,离散数学,计算机网络,数据库原理与应用,算法设计与\n分析,操作系统,人工智能原理与应用,Android开发,Web后端开发,软件工程"
+            }
+        ],
+        "job_exp_objs": [],
+        "proj_exp_objs": [
+            {
+                "start_date": "2024.05",
+                "end_date": "至今",
+                "proj_name": "个人博客网站(PC端)",
+                "proj_content": "项目描述:\n前端采用 Pure.css 响应式框架进行开发,后端采用 Node.js 数据管理和操作,数据库使用 Redis 进\n行数据持久化和消息的处理。"
+            },
+            {
+                "start_date": "2024.03",
+                "end_date": "2024.05",
+                "proj_name": "仓库管理系统(微信小程序)",
+                "proj_content": "项目描述:\n仿照某企业的仓库管理系统进行开发,前端使用了微信小程序API进行开发,后端使用了\nSpringBoot+MyBatisPlus 进行数据的操作与管理,数据库采用了MySQL 进行数据的持久化。"
+            }
+        ],
+        "social_exp_objs": [],
+        "training_objs": [],
+        "lang_objs": [
+            {
+                "language_name": "英语"
+            },
+            {
+                "language_name": "普通话"
+            }
+        ],
+        "cert_objs": [
+            {
+                "langcert_lang": "英语",
+                "langcert_name": "大学英语4级"
+            },
+            {
+                "langcert_lang": "普通话",
+                "langcert_name": "普通话二级"
+            }
+        ],
+        "all_cert_objs": [
+            {
+                "cert_name": "大学英语4级",
+                "cert_type": "certificate"
+            },
+            {
+                "cert_name": "普通话二级",
+                "cert_type": "certificate"
+            },
+            {
+                "cert_name": "三好学生",
+                "cert_type": "award"
+            },
+            {
+                "cert_name": "校三等奖学金",
+                "cert_type": "award"
+            },
+            {
+                "cert_name": "国家励志奖学金",
+                "cert_type": "award"
+            },
+            {
+                "cert_name": "大学生英语竞赛校三等奖",
+                "cert_type": "award"
+            }
+        ],
+        "skills_objs": [
+            {
+                "skills_name": "Vue",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "MyBatis",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "后端框架",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "Js",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "前端框架",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "ElementUI",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "Spring",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "SpringMVC",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "MyBatisPlus",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "Java",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "组件库",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "Python",
+                "skills_level": "掌握"
+            },
+            {
+                "skills_name": "Redis",
+                "skills_level": "了解"
+            },
+            {
+                "skills_name": "MySQL",
+                "skills_level": "了解"
+            },
+            {
+                "skills_name": "数据库技术",
+                "skills_level": "了解"
+            },
+            {
+                "skills_name": "SpringBoot"
+            },
+            {
+                "skills_name": "前端"
+            },
+            {
+                "skills_name": "Node.js"
+            },
+            {
+                "skills_name": "微信小程序"
+            },
+            {
+                "skills_name": "数据持久化"
+            }
+        ],
+        "cont_basic_info": "Evaluation Warning :The version can be used only for evaluation purpose.\n个人简历\n基本信息\n姓名:王家豪  性别:男\n学历:本科  年龄:22\n电话:13868555068  邮箱:1980708158@qq.com",
+        "cont_education": "温州大学  计算机科学与技术(本科)  2021.09-2025.06\n主修课程:C、Java、Python 程序设计,离散数学,计算机网络,数据库原理与应用,算法设计与\n分析,操作系统,人工智能原理与应用,Android开发,Web后端开发,软件工程",
+        "cont_proj_exp": "项目名称:仓库管理系统(微信小程序)  2024.03-2024.05\n项目描述:\n仿照某企业的仓库管理系统进行开发,前端使用了微信小程序API进行开发,后端使用了\nSpringBoot+MyBatisPlus 进行数据的操作与管理,数据库采用了MySQL 进行数据的持久化。\n项目名称:个人博客网站(PC端)  2024.5-至今\n项目描述:\n前端采用 Pure.css 响应式框架进行开发,后端采用 Node.js 数据管理和操作,数据库使用 Redis 进\n行数据持久化和消息的处理。",
+        "cont_award": "校内荣誉:温州大学三好学生、校三等奖学金、国家励志奖学金、全国大学生英语竞赛校三等奖",
+        "cont_job_skill": "英语四级、普通话二级\n专业技能\n编程语言:了解并掌握C、Java、Python、Js等编程语言\n开发框架:掌握并运用 Spring、SpringMVC、MyBatis/MyBatisPlus后端框架和Vue js、\nElementUI等前端框架和组件库\n数据库技术:了解并能运用MySQL、Redis等数据库",
+        "cont_my_desc": "思路清晰,有独立分析解决问题的能力,工作认真、负责,乐于沟通,乐于互助,乐于学习,勇于\n创新,乐于分享,具备良好的学习、沟通和团队协作能力,对软件有良好的认识。",
+        "raw_text": "Evaluation Warning :The version can be used only for evaluation purpose.\n个人简历\n基本信息\n姓名:王家豪  性别:男\n学历:本科  年龄:22\n电话:13868555068  邮箱:1980708158@qq.com\n教育背景\n温州大学  计算机科学与技术(本科)  2021.09-2025.06\n主修课程:C、Java、Python 程序设计,离散数学,计算机网络,数据库原理与应用,算法设计与\n分析,操作系统,人工智能原理与应用,Android开发,Web后端开发,软件工程\n项目经历\n项目名称:仓库管理系统(微信小程序)  2024.03-2024.05\n项目描述:\n仿照某企业的仓库管理系统进行开发,前端使用了微信小程序API进行开发,后端使用了\nSpringBoot+MyBatisPlus 进行数据的操作与管理,数据库采用了MySQL 进行数据的持久化。\n项目名称:个人博客网站(PC端)  2024.5-至今\n项目描述:\n前端采用 Pure.css 响应式框架进行开发,后端采用 Node.js 数据管理和操作,数据库使用 Redis 进\n行数据持久化和消息的处理。\n荣誉证书\n校内荣誉:温州大学三好学生、校三等奖学金、国家励志奖学金、全国大学生英语竞赛校三等奖\n:英语四级、普通话二级\n专业技能\n编程语言:了解并掌握C、Java、Python、Js等编程语言\n开发框架:掌握并运用 Spring、SpringMVC、MyBatis/MyBatisPlus后端框架和Vue js、\nElementUI等前端框架和组件库\n数据库技术:了解并能运用MySQL、Redis等数据库\n个人评价\n思路清晰,有独立分析解决问题的能力,工作认真、负责,乐于沟通,乐于互助,乐于学习,勇于\n创新,乐于分享,具备良好的学习、沟通和团队协作能力,对软件有良好的认识。"
+    },
+    "tags": {
+        "industries": [],
+        "pos_types": [
+            {
+                "tag_name": "web前端开发",
+                "tag_weight": 0.0029304854786757267
+            },
+            {
+                "tag_name": "软件工程师",
+                "tag_weight": 0.001979099615595558
+            },
+            {
+                "tag_name": "高级软件工程师",
+                "tag_weight": 0.0018729628897074498
+            },
+            {
+                "tag_name": "互联网软件开发工程师",
+                "tag_weight": 0.0011737765153249104
+            },
+            {
+                "tag_name": "数据库工程师/管理员",
+                "tag_weight": 0.0008460868835449219
+            }
+        ],
+        "pos_tags": [
+            {
+                "tag_name": "前端",
+                "tag_weight": 0.004834575808048249
+            },
+            {
+                "tag_name": "node.js",
+                "tag_weight": 0.004401661932468414
+            },
+            {
+                "tag_name": "redis",
+                "tag_weight": 0.00406489360332489
+            },
+            {
+                "tag_name": "响应式",
+                "tag_weight": 0.003910483598709107
+            },
+            {
+                "tag_name": "数据管理",
+                "tag_weight": 0.0018332697749137879
+            },
+            {
+                "tag_name": "数据持久化",
+                "tag_weight": 0.001
+            },
+            {
+                "tag_name": "mysql",
+                "tag_weight": 0.0009588658571243286
+            },
+            {
+                "tag_name": "仓库管理",
+                "tag_weight": 0.0004102141618728638
+            },
+            {
+                "tag_name": "springboot",
+                "tag_weight": 0.00020000000000000004
+            }
+        ],
+        "skills_tags": [
+            {
+                "tag_name": "redis",
+                "tag_weight": 0.8893880748748779
+            },
+            {
+                "tag_name": "mysql",
+                "tag_weight": 0.8269416284561157
+            },
+            {
+                "tag_name": "java",
+                "tag_weight": 0.6111613750457764
+            },
+            {
+                "tag_name": "js",
+                "tag_weight": 0.586988639831543
+            },
+            {
+                "tag_name": "springmvc",
+                "tag_weight": 0.5733996868133545
+            },
+            {
+                "tag_name": "spring",
+                "tag_weight": 0.5545071125030517
+            },
+            {
+                "tag_name": "python",
+                "tag_weight": 0.5538455009460449
+            },
+            {
+                "tag_name": "mybatis",
+                "tag_weight": 0.5404711723327636
+            },
+            {
+                "tag_name": "前端",
+                "tag_weight": 0.4732785677909851
+            },
+            {
+                "tag_name": "node.js",
+                "tag_weight": 0.3521329545974732
+            },
+            {
+                "tag_name": "前端框架",
+                "tag_weight": 0.3329868078231812
+            },
+            {
+                "tag_name": "响应式",
+                "tag_weight": 0.31283868789672853
+            },
+            {
+                "tag_name": "英语四级",
+                "tag_weight": 0.15196813344955445
+            },
+            {
+                "tag_name": "仓库管理",
+                "tag_weight": 0.08204283237457276
+            },
+            {
+                "tag_name": "普通话二级",
+                "tag_weight": 0.08000000000000002
+            },
+            {
+                "tag_name": "vue",
+                "tag_weight": 0.08000000000000002
+            },
+            {
+                "tag_name": "数据库技术",
+                "tag_weight": 0.08000000000000002
+            }
+        ]
+    },
+    "eval": {
+        "salary": 9500
+    }
+}

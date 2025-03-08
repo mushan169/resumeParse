@@ -23,6 +23,7 @@ MATCH (cn:Company)-[:HAS]->(cp:CompanyPosition)-[:POSITION]->(p:Position),
       (cp)-[:ADDRESS]->(ad:Address),
       (cp)-[:CITY]->(c:City),
       (cp)-[:QUALITY]->(q:Quality)
+      
 WHERE e.name IN $education 
   AND ($city IS NULL OR c.name IN $city)
   AND ANY(skill IN $skills WHERE skill IN [(cp)-[:REQUIRES_SKILL]->(sk2:Skill) | sk2.name])
@@ -35,7 +36,8 @@ WITH p.name AS Position,
      e.name AS Education, 
      ad.name AS Address, 
      c.name AS City, 
-     q.name AS Quality
+     q.name AS Quality,
+     properties(cp) as Properties
 RETURN Position,
        Company,
        CompanyPosition,
@@ -45,7 +47,8 @@ RETURN Position,
        Education,
        Address,
        City,
-       Quality
+       Quality,
+       Properties
 ORDER BY skillMatchCount DESC
 LIMIT $limit
 
@@ -64,7 +67,9 @@ LIMIT $limit
             "Skills": result["Skills"],
             "Education": result["Education"],
             "Quality": result["Quality"],
-            "CompanyPosition": result["CompanyPosition"]
+            "Address": result["Address"],
+            "CompanyPosition": result["CompanyPosition"],
+            "Properties": result["Properties"]
         }
         results_list.append(result_dict)
 

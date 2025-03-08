@@ -22,7 +22,8 @@ education_keywords = {
     "大专": 1,
 }
 
-# 提取简历数据
+# 提取简历数据，包含ocr识别图片和提取简历数据，
+# 普通模式
 def extract_resume_data(img_path, output_path):
     # 基础数据用于校对提取的内容
     basic_data_path = "./data/basicData.json"
@@ -48,7 +49,8 @@ def extract_resume_data(img_path, output_path):
     resume_text = ""
     for line in result:
         for word_info in line:
-            resume_text += word_info[1][0].strip() + " "  # word_info[1][0] 是文字内容
+            # word_info[1][0] 是文字内容
+            resume_text += word_info[1][0].strip() + " "
 
     # 输出识别的文字
     print("OCR 识别结果：")
@@ -90,13 +92,17 @@ def extract_resume_data(img_path, output_path):
         label = nlp.vocab.strings[match_id]
         content = doc[start:end].text
         if content not in education and label == "ACADEMIC_PATTERN":
-            education.append(education_keywords.get(content))
+            education.append(content)
 
-    result = {"name": name, "major": major, "education": education,
-              "skills": {skill: random.randint(1,4) for skill in skills}, "quality": len(personality), "email": email}
+    resume = {"name": name, "major": major, "education": education,
+              "skills": skills, "quality": personality, "email": email}
+
+    resumeFormat = {"name": name, "major": major, "education": [education_keywords.get(item) for item in education],
+                    "skills": {skill: random.randint(1, 4) for skill in skills}, "quality": len(personality), "email": email}
+
     # 写回文件
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False, indent=2)
+        json.dump(resume, f, ensure_ascii=False, indent=2)
 
     # print("提取结果：")
     # print("姓名:", name)
@@ -110,7 +116,58 @@ def extract_resume_data(img_path, output_path):
 
     gc.collect()
 
-    return result
+    return resume, resumeFormat
+
+# 快速模式
+def extract_resume_data_quick():
+
+    # 快速模式的测试
+    resumeJsonData_url = "./test/result.json" # 模拟api得到的简历数据
+
+    with open(resumeJsonData_url, 'r', encoding='utf-8') as f:
+        resumeJsonData = json.load(f)
+
+    # result = resumeJsonData['result']
+    name = resumeJsonData['result']['name']
+    email = resumeJsonData['result']['email']
+    phone = resumeJsonData['result']['phone']
+    gender = resumeJsonData['result']['gender']
+    age = resumeJsonData['result']['age']
+    education = resumeJsonData['result']['degree']  # 学历
+    major = resumeJsonData['result']['major']
+    skills = [skill["skills_name"]
+              for skill in resumeJsonData['result']['skills_objs']]
+    # 软性技能/品质
+    split_result = re.split(r'[、,]', resumeJsonData['result']['cont_my_desc'])
+    quality = [item.strip().replace('\n', '')
+               for item in split_result if item.strip()]
+
+    project = [project for project in resumeJsonData['result']
+               ['proj_exp_objs']]  # 项目经历/暂定
+
+    # 用于前端展示的resume格式
+    resume = {
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "gender": gender,
+        "age": age,
+        "education": [education],
+        "major": major,
+        "skills": skills,
+        "quality": quality,
+        "project": project
+    }
+    # 用于推荐算法的resume格式
+    resumeFormat = {
+        "name": name,
+        "major": major,
+        "education": [education_keywords[education] for item in resume['education']],
+        "skills": {skill: random.randint(1, 4) for skill in skills},
+        "quality": len(quality),
+        "email": email}
+
+    return resume, resumeFormat
 
 
 if __name__ == "__main__":

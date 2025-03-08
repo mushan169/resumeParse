@@ -10,7 +10,7 @@ from spacy.matcher import Matcher
 # 提取建立数据
 def extract_resume_data( img_path, output_path):
 
-    basic_data_path = "./data/basicData.json"
+    basic_data_path = "../data/basicData.json"
     with open(basic_data_path, "r", encoding="utf-8") as f:
         basicData = json.load(f)
 
@@ -39,7 +39,7 @@ def extract_resume_data( img_path, output_path):
     print(resume_text.strip())
 
     # 使用spacy训练模型提取职业技能
-    nlp = spacy.load("./spacy/model-best")
+    nlp = spacy.load("../spacy/model-best")
     doc = nlp(resume_text)
 
     # 提取职业技能、个人素质
@@ -96,6 +96,6 @@ def extract_resume_data( img_path, output_path):
 
 if __name__ == "__main__":
     print("这是一个测试")
-    img_path = "./images/3.jpg"
-    output_path = "./data/result.json"
+    img_path = "../images/3.jpg"
+    output_path = "../data/result.json"
     extract_resume_data(img_path, output_path)

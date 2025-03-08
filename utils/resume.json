@@ -1,0 +1,18 @@
+{
+    "basic_info": {
+        "name": "王家豪",
+        "email": "1980708158@qq.com",
+        "phone": "13868555068",
+        "major": "计算机科学与技术",
+        "degree": 2,
+        "skills": {
+            "Vue": 1,
+            "JavaScript": 1,
+            "Python": 1,
+            "MySQL": 1,
+            "数据库管理": 1,
+            "Node.js": 1
+        },
+        "quality": 3
+    }
+}

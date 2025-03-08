@@ -1,26 +1,34 @@
 {
   "name": [
-    "田立辉"
+    "丁雅健"
   ],
   "major": [
     "计算机类"
   ],
   "education": [
-    2
+    "本科"
   ],
-  "skills": {
-    "数据分析": 2,
-    "数据挖掘": 2,
-    "Python": 2,
-    "Spark": 2,
-    "Hive": 2,
-    "SQL": 2,
-    "数据可视化": 2,
-    "PowerBl": 2,
-    "编程语言": 2
-  },
-  "quality": 4,
+  "skills": [
+    "HTML5",
+    "CSS3",
+    "JavaScript",
+    "React",
+    "Vue.js",
+    "安全性",
+    "CSS",
+    "Git",
+    "版本控制工具",
+    "Node.js",
+    "Express"
+  ],
+  "personality": [
+    "创造力",
+    "进取精神",
+    "前端开发",
+    "团队协 教育",
+    "前端性能优化"
+  ],
   "email": [
-    "tianlihui222@canva.com"
+    "dingyaj@canva.com"
   ]
 }
