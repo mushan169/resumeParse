@@ -1,4 +1,5 @@
-import json as JSON
+import random
+from typing import List, Optional
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,7 +40,7 @@ async def root():
 async def root():
     return {"message": "Hello World"}
 
-# 用于快速模式的简历解析的测试
+# 用于快速模式的简历解析的测试，目前快速模式使用的是这个接口
 
 
 @app.post("/quickMode")
@@ -54,9 +55,48 @@ async def resumeParseQuick(city: str | None = None, top_n: int = 20, target_posi
         "resumeInfo": resume,
         "recommendPositions": recommend_positions
     })
+
+
+# 用户自主提交表单形式获取推荐岗位
+@app.post("/userMode")
+async def resumeParseQuick(
+    city: Optional[List[str]] = None,
+    major: Optional[str] = None,
+    education: Optional[str] = None,
+    skills: Optional[List[str]] = None,
+    quality: Optional[List[str]] = None,
+    top_n: int = 20,
+    target_position_id: Optional[int] = None
+):
+    education_keywords = {
+        "博士": 4,
+        "硕士": 3,
+        "本科": 2,
+        "大专": 1,
+    }
+
+    # 处理 None 值，避免 KeyError
+    education_level = education_keywords.get(education, 0)
+ 
+    resumeFormat = {
+        "major": major,
+        "education": education_level,
+        "skills": {skill: random.randint(1, 4) for skill in (skills or [])},
+        "quality": len(quality or []),
+    }
+
+    # 确保 itremCF 变量存在
+    if "itremCF" not in globals():
+        return {"error": "推荐系统未初始化"}
+
+    recommend_positions = itremCF.recommend_positions_itemcf(
+        resumeFormat, city, target_position_id, top_n)
+
+    return responseFormat.Response.success(message="数据处理成功", data={
+        "recommendPositions": recommend_positions
+    })
+
 # 用于简历解析和岗位推荐的测试
-
-
 @app.get("/resumeParseTest")
 async def resumeParseTest(city: str | None = None, top_n: int = 20, target_position_id: int | None = None):
     upload_image_path = "./images/1.jpg"
@@ -70,9 +110,8 @@ async def resumeParseTest(city: str | None = None, top_n: int = 20, target_posit
 
     return recommend_positions
 
+
 # 用于简历文件解析和岗位推荐
-
-
 @app.post("/resumeParse")
 async def resumeParse(city: str | None = None, top_n: int = 20, target_position_id: int | None = None, file: UploadFile | None = None):
     file_type = file.content_type  # 文件类型
@@ -115,8 +154,6 @@ async def resumeParse(city: str | None = None, top_n: int = 20, target_position_
     })
 
 # 测试获取图数据库信息
-
-
 @app.get("/testProperties")
 async def get_graph_data_properties(company_position: str = ""):
     # 根据 company_position 是否为空来动态构造 Cypher 查询
@@ -287,6 +324,8 @@ async def get_position_info(
     }
 
 # 用户获取AI的建议,后续可以新增type类型来规范需要获取需要什么类容
+
+
 @app.post("/getRecommendContent")
 async def get_recommend_content(resume: str | None = None, selectedPosition: str | None = None, selectedSearchPosition: str | None = None):
     print("开始获取提升建议")
