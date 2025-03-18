@@ -1,7 +1,7 @@
 import json
 import re
 import random
-import itremCF
+import itemCF
 education_keywords = {
     "博士": 4,
     "硕士": 3,
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     limit = 10
     top_n = 20
     target_position_id = None
-    recommend_positions = itremCF.recommend_positions_itemcf(
+    recommend_positions = itemCF.recommend_positions_itemcf(
     resumeFormat, city, target_position_id, top_n)
 
     for item in recommend_positions:

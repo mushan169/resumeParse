@@ -7,12 +7,11 @@ with open("./data/basicData.json", "r", encoding="utf-8") as f:
     basicData = json.load(f)
     skills_list = basicData["skills"]
     qualities_list = basicData["personality"]
-
-
+# 简历neo4j图数据查询
 def build_query(city, education, skills, limit):
-    uri = "bolt://localhost:7687"  # 修改为您的 Neo4j 实例地址
-    username = "neo4j"              # 修改为您的用户名
-    password = "mushanmushan"          # 修改为您的密码
+    uri = "bolt://localhost:7687"
+    username = "neo4j"
+    password = "mushanmushan"
     graph = Graph(uri, auth=(username, password))
 
     query = """
@@ -24,9 +23,15 @@ MATCH (cn:Company)-[:HAS]->(cp:CompanyPosition)-[:POSITION]->(p:Position),
       (cp)-[:CITY]->(c:City),
       (cp)-[:QUALITY]->(q:Quality)
       
-WHERE e.name IN $education 
-  AND ($city IS NULL OR c.name IN $city)
-  AND ANY(skill IN $skills WHERE skill IN [(cp)-[:REQUIRES_SKILL]->(sk2:Skill) | sk2.name])
+WHERE 
+  (size($education) = 0 OR e.name IN $education)
+  
+  AND (size($city) = 0 OR c.name IN $city)
+  
+  AND (size($skills) = 0 OR ANY(skill IN $skills 
+    WHERE skill IN [(cp)-[:REQUIRES_SKILL]->(sk2:Skill) | sk2.name]
+  ))
+
 WITH p.name AS Position, 
      cn.name AS Company, 
      cp.id AS CompanyPosition, 
@@ -38,6 +43,7 @@ WITH p.name AS Position,
      c.name AS City, 
      q.name AS Quality,
      properties(cp) as Properties
+     
 RETURN Position,
        Company,
        CompanyPosition,
@@ -51,36 +57,32 @@ RETURN Position,
        Properties
 ORDER BY skillMatchCount DESC
 LIMIT $limit
+"""
 
-    """
-    results = graph.run(query, education=education,
-                        city=city, skills=skills, limit=limit)
+    # 确保参数格式正确
+    education = education if education else []
+    city = city if city else []
+    skills = skills if skills else []
 
-    # 将结果转换为字典列表
-    results_list = []
-    for result in results:
-        # 将每个结果项转换为字典
-        result_dict = {
-            "Position": result["Position"],
-            "Company": result["Company"],
-            "Salary": result["Salary"],
-            "Skills": result["Skills"],
-            "Education": result["Education"],
-            "Quality": result["Quality"],
-            "Address": result["Address"],
-            "CompanyPosition": result["CompanyPosition"],
-            "Properties": result["Properties"]
-        }
-        results_list.append(result_dict)
+    results = graph.run(query, 
+                        education=education,
+                        city=city, 
+                        skills=skills, 
+                        limit=limit)
 
-    # 将获得的数据写到文件中
-    # with open('positions.json', 'w', encoding='utf-8') as f:
-    #     json.dump(results_list, f, ensure_ascii=False, indent=2)
-    # print(f'获取职位数据:{results_list}')
+    results_list = [{
+        "Position": r["Position"],
+        "Company": r["Company"],
+        "Salary": r["Salary"],
+        "Skills": r["Skills"],
+        "Education": r["Education"],
+        "Quality": r["Quality"],
+        "Address": r["Address"],
+        "CompanyPosition": r["CompanyPosition"],
+        "Properties": r["Properties"]
+    } for r in results]
 
     return results_list
-
-
 # 职位相似度计算
 def calculate_similarity_matrix(positions):
     feature_vectors = []
@@ -113,8 +115,6 @@ def calculate_similarity_matrix(positions):
     similarity_matrix = cosine_similarity(feature_matrix)
 
     return position_ids, similarity_matrix
-
-
 # 推荐函数
 def recommend_positions_itemcf(resume, city, target_position_id=None, top_n=20):
     # 假设用户学历为本科以上
@@ -147,7 +147,7 @@ def recommend_positions_itemcf(resume, city, target_position_id=None, top_n=20):
                 "Similarity": average_similarity[idx],
             })
         return recommendations
-
+    
     # 查找目标职位的索引
     # if target_position_id not in position_ids:
     #     return []
@@ -170,7 +170,7 @@ def recommend_positions_itemcf(resume, city, target_position_id=None, top_n=20):
 # if __name__ == "__main__":
 
 #     city = ['杭州市']
-#     education = [1, 2, 3]
+#     education = [1, 2, 3] 
 #     skills = ['Python', 'Java', 'C++']
 #     limit = 10
 #     top_n = 20

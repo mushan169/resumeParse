@@ -3,12 +3,11 @@ from typing import List, Optional
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Body
 from openai import OpenAI
-from utils import docx2img
-from utils import pdf2img
-from utils import responseFormat
+from utils import docx2img, pdf2img,responseFormat
 from py2neo import Graph
-import itremCF
+import itemCF
 import extractData
 import graphTest
 
@@ -48,7 +47,7 @@ async def resumeParseQuick(city: str | None = None, top_n: int = 20, target_posi
     # 测试目前使用./test/result.json中的假数据
     resume, resumeFormat = extractData.extract_resume_data_quick()
 
-    recommend_positions = itremCF.recommend_positions_itemcf(
+    recommend_positions = itemCF.recommend_positions_itemcf(
         resumeFormat, city, target_position_id, top_n)
 
     return responseFormat.Response.success(message="数据处理成功", data={
@@ -57,17 +56,25 @@ async def resumeParseQuick(city: str | None = None, top_n: int = 20, target_posi
     })
 
 
-# 用户自主提交表单形式获取推荐岗位
+
+
 @app.post("/userMode")
 async def resumeParseQuick(
-    city: Optional[List[str]] = None,
-    major: Optional[str] = None,
-    education: Optional[str] = None,
-    skills: Optional[List[str]] = None,
-    quality: Optional[List[str]] = None,
-    top_n: int = 20,
-    target_position_id: Optional[int] = None
+    city: Optional[List[str]] = Body(None),
+    major: Optional[str] = Body(None),
+    education: Optional[str] = Body(None),
+    skills: Optional[List[str]] = Body(None),
+    quality: Optional[List[str]] = Body(None),
+    top_n: int = Body(40),
+    target_position_id: Optional[int] = Body(None)
 ):
+    # 处理逻辑保持不变
+    print("city:", city)
+    print("major:", major)
+    print("education:", education)
+    print("skills:", skills)
+    print("quality:", quality)
+    
     education_keywords = {
         "博士": 4,
         "硕士": 3,
@@ -85,13 +92,10 @@ async def resumeParseQuick(
         "quality": len(quality or []),
     }
 
-    # 确保 itremCF 变量存在
-    if "itremCF" not in globals():
-        return {"error": "推荐系统未初始化"}
-
-    recommend_positions = itremCF.recommend_positions_itemcf(
+    recommend_positions = itemCF.recommend_positions_itemcf(
         resumeFormat, city, target_position_id, top_n)
-
+    
+    print(recommend_positions)
     return responseFormat.Response.success(message="数据处理成功", data={
         "recommendPositions": recommend_positions
     })
@@ -105,7 +109,7 @@ async def resumeParseTest(city: str | None = None, top_n: int = 20, target_posit
     print(resume)
 
     # 获得推荐的岗位
-    recommend_positions = itremCF.recommend_positions_itemcf(
+    recommend_positions = itemCF.recommend_positions_itemcf(
         resume, city, target_position_id, top_n)
 
     return recommend_positions
@@ -145,7 +149,7 @@ async def resumeParse(city: str | None = None, top_n: int = 20, target_position_
     resume, resumeFormat = extractData.extract_resume_data(
         input_path, output_path)
 
-    recommend_positions = itremCF.recommend_positions_itemcf(
+    recommend_positions = itemCF.recommend_positions_itemcf(
         resumeFormat, city, target_position_id, top_n)
 
     return responseFormat.Response.success(message="数据处理成功", data={
@@ -324,11 +328,10 @@ async def get_position_info(
     }
 
 # 用户获取AI的建议,后续可以新增type类型来规范需要获取需要什么类容
-
-
 @app.post("/getRecommendContent")
-async def get_recommend_content(resume: str | None = None, selectedPosition: str | None = None, selectedSearchPosition: str | None = None):
+async def get_recommend_content(resume: Optional[str] = Body(None), selectedPosition: Optional[str] = Body(None), selectedSearchPosition: Optional[str] = Body(None)):
     print("开始获取提升建议")
+
     # 根据接收到的数据构造响应内容
     content = (
         f"请根据以下内容给出求职建议，并以一段没有特殊格式的文本返回数据，字数限定在100到200之间：\n"
@@ -336,7 +339,7 @@ async def get_recommend_content(resume: str | None = None, selectedPosition: str
         f"- 选定职位所需技能：{selectedPosition}\n"
         f"- 图数据库搜索职位所需技能：{selectedSearchPosition}"
     )
-
+    # print(content)
     client = OpenAI(api_key="sk-d129cd5ff21f408e8c82a327a556a139",
                     base_url="https://api.deepseek.com")
 
